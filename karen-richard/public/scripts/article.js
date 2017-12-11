@@ -23,10 +23,8 @@ var app = app || {};
     rawData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)))
 
 
-    rawData.forEach(articleObject => Article.all.push(new Article(articleObject)));
-
-
-    //Article.all = rawData.map(articleObject => new Article(articleObject));
+    //rawData.forEach(articleObject => Article.all.push(new Article(articleObject)));
+    Article.all = rawData.map(articleObject => new app.Article(articleObject));
 
   };
 
@@ -43,17 +41,22 @@ var app = app || {};
       return totalWords.split(' ').length + sum
     },0)
   };
-
+//----------------------------------------
   Article.allAuthors = () => {
-    Article.all.filter(function(author, pos){
-      return Article.all.indexOf(author) === pos;
+    let arr = [];
+    return Article.all.map(article => article.author).reduce(function(author, curr){
+      if(curr)
+
+// We never made it
+      }
+      return
     })
   };
 
-  // Article.numWordsByAuthor = () => {
-  //   return Article.allAuthors(Article.body.length).map(author => {})
-  // };
-
+  Article.numWordsByAuthor = () => {
+    return Article.allAuthors(Article.body.length).map(author => {})
+  };
+//------------------------------------------
   Article.truncateTable = callback => {
     $.ajax({
       url: '/articles',

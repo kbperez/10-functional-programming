@@ -7,7 +7,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3001;
 const app = express();
-const conString = 'postgres://postgres:plokij09localhost:5432/postgres';
+const conString = 'postgres://postgres:plokij09@localhost:5432/postgres';
 //const conString = 'postgres://localhost:5432';
 const client = new pg.Client(conString);
 client.connect();
