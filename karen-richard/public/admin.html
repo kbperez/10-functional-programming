@@ -13,6 +13,10 @@
 
     <script id="admin_template" type="text/x-handlebars-template">
       <li>{{author}}:{{author_totalWord}} words written</li>
+      <li>{{author}}:{{author_totalWord}} words written</li>
+      <li>{{author}}:{{author_totalWord}} words written</li>
+      <li>{{author}}:{{author_totalWord}} words written</li>
+      <li>{{author}}:{{author_totalWord}} words written</li>
     </script>
 
 
@@ -54,7 +58,7 @@
     <script src="scripts/article.js"></script>
     <script src="scripts/articleView.js"></script>
     <script>
-      Article.fetchAll(articleView.initAdminPage));
+      app.Article.fetchAll(app.articleView.initAdminPage);
     </script>
   </body>
 </html>
