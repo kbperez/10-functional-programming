@@ -41,22 +41,27 @@ var app = app || {};
       return totalWords.split(' ').length + sum
     },0)
   };
-//----------------------------------------
-  Article.allAuthors = () => {
-    let arr = [];
-    return Article.all.map(article => article.author).reduce(function(author, curr){
-      if(curr)
 
-// We never made it
+  Article.allAuthors = () => {
+    return Article.all.map(article => article.author).reduce((authors, curr) => {
+      if(authors.indexOf(curr) === -1) authors.push(curr);
+      return authors;
+      },[]);
+    };
+  }
+
+  Article.numWordsByAuthor = () => {
+    return Article.allAuthors().map(author => {
+      return {
+        name: author,
+        numWords: Article.all.filter(a => a.author === author)
+          .map(a => a.body.match(/\b\w+/g).length)
+          .reduce((a, b) => a + b)
       }
-      return
     })
   };
 
-  Article.numWordsByAuthor = () => {
-    return Article.allAuthors(Article.body.length).map(author => {})
-  };
-//------------------------------------------
+
   Article.truncateTable = callback => {
     $.ajax({
       url: '/articles',
