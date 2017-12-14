@@ -4,7 +4,9 @@ var app = app || {};
 (function(module){
 
   function Article(rawDataObj) {
+
     // REVIEW: In Lab 8, we explored a lot of new functionality going on here. Let's re-examine the concept of context. Normally, "this" inside of a constructor function refers to the newly instantiated object. However, in the function we're passing to forEach, "this" would normally refer to "undefined" in strict mode. As a result, we had to pass a second argument to forEach to make sure our "this" was still referring to our instantiated object. One of the primary purposes of lexical arrow functions, besides cleaning up syntax to use fewer lines of code, is to also preserve context. That means that when you declare a function using lexical arrows, "this" inside the function will still be the same "this" as it was outside the function. As a result, we no longer have to pass in the optional "this" argument to forEach!
+
     Object.keys(rawDataObj).forEach(key => this[key] = rawDataObj[key]);
   }
 
@@ -12,7 +14,6 @@ var app = app || {};
 
   Article.prototype.toHtml = function() {
     var template = Handlebars.compile($('#article-template').text());
-//    var template = Handlebars.compile($('#admin-template').text());
     this.daysAgo = parseInt((new Date() - new Date(this.publishedOn))/60/60/24/1000);
     this.publishStatus = this.publishedOn ? `published ${this.daysAgo} days ago` : '(draft)';
     this.body = marked(this.body);
@@ -23,11 +24,8 @@ var app = app || {};
   Article.loadAll = rawData => {
     rawData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)))
 
-    //OLD forEach():
-    rawData.forEach(articleObject => Article.all.push(new Article(articleObject)));
-
-
-    //Article.all = rawData.map((articleObject) => new Article(articleObject))
+    //rawData.forEach(articleObject => Article.all.push(new Article(articleObject)));
+    Article.all = rawData.map(articleObject => new app.Article(articleObject));
 
   };
 
@@ -39,18 +37,32 @@ var app = app || {};
       })
   };
 
-  // Article.numWordsAll = () => {
-  //
-  //   return Article.all.map(Article.body.split(' ').length).reduce((acc, curr) => acc + curr);
-  // };
-  //
-  // Article.allAuthors = () => {
-  //   return Article.all.filter((Article.author, pos) => Article.all.indexOf(Article.author == pos;
-  // )};
-  //
-  // Article.numWordsByAuthor = () => {
-  //   return Article.allAuthors().map(author => {})
-  // };
+
+  Article.numWordsAll = () => {
+    return Article.all.map(article => article.body).reduce(function(sum, totalWords){
+      return totalWords.split(' ').length + sum
+    },0)
+  };
+
+  Article.allAuthors = () => {
+    return Article.all.map(article => article.author).reduce((authors, curr) => {
+      if(authors.indexOf(curr) === -1) authors.push(curr);
+      return authors;
+    }, []);
+  };
+
+
+  Article.numWordsByAuthor = () => {
+    return Article.allAuthors().map(author => {
+      return {
+        name: author,
+        numWords: Article.all.filter(a => a.author === author)
+          .map(a => a.body.match(/\b\w+/g).length)
+          .reduce((a, b) => a + b)
+      }
+    })
+  };
+
 
   Article.truncateTable = callback => {
     $.ajax({
