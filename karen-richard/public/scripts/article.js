@@ -46,9 +46,9 @@ var app = app || {};
     return Article.all.map(article => article.author).reduce((authors, curr) => {
       if(authors.indexOf(curr) === -1) authors.push(curr);
       return authors;
-      },[]);
-    };
-  }
+    }, []);
+  };
+
 
   Article.numWordsByAuthor = () => {
     return Article.allAuthors().map(author => {
